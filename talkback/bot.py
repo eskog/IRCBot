@@ -2,19 +2,6 @@ from twisted.internet import protocol
 from twisted.python import log
 from twisted.words.protocols import irc
 
-class TalkBackBotFactory(protocol.ClientFactory):
-    """Instantiate the TalkBackBot IRC Protocol"""
-
-    protocol = TalkBackBot
-
-    def __init__(self, settings):
-        """initialize the bot factory with settings."""
-        self.channel = channel
-        self.nickname = nickname
-        self.realname = realname
-        self.quotes = quotes
-        self.trigger = triggers
-
 class TalkBackBot(irc.IRCClient):
 
     def connectionMade(self):
@@ -49,14 +36,13 @@ class TalkBackBot(irc.IRCClient):
         sendTo= None
         prefix = ''
         senderNick = user.split('!', 1)[0]
-        if channel == self.nickname: #Om true så är det ett private message.
+        if channel == self.nickname:
             #/msg back
             sendTo = senderNick
-        elif msg.startswith(self.nickname): #Om true så börjar meddelande med botens namn.
+        elif msg.startswith(self.nickname):
             #reply back to the channel
             sendTo = channel
             prefix = senderNick + ': '
-            break
         else:
             msg = msg.lower()
             for trigger in self.factory.triggers:
@@ -72,3 +58,17 @@ class TalkBackBot(irc.IRCClient):
                 "sent message to {reciever}, triggered by {sender}:\n\t{quote}"
                 .format(reciever= sendTo, sender=senderNick, quote=quote)
             )
+
+
+class TalkBackBotFactory(protocol.ClientFactory):
+    """Instantiate the TalkBackBot IRC Protocol"""
+
+    protocol = TalkBackBot
+
+    def __init__(self, settings):
+        """initialize the bot factory with settings."""
+        self.channel = channel
+        self.nickname = nickname
+        self.realname = realname
+        self.quotes = quotes
+        self.trigger = triggers

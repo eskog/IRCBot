@@ -4,14 +4,13 @@ from twisted.application.service import IServiceMaker, Service
 from twisted.internet.endpoints import clientFromString
 from twisted.plugin import IPlugin
 from twisted.python import usage, log
-from zope.interface import  implementer
-
+from zope.interface import implementer
 from talkback.bot import TalkBackBotFactory
 from talkback.quote_picker import QuotePicker
 
 class Options(usage.Options):
     optParameters = [
-        ['config', 'c', 'settings.ini', ,'Configuration file.'],
+        ['config', 'c', 'settings.ini', 'Configuration file.'],
     ]
 
 class TalkBackBotService(Service):
@@ -51,13 +50,13 @@ class TalkBackBotService(Service):
 
     def stopService(self):
         """Disconnect."""
-            if self._bot and self._bot.transport.connected:
-                self._bot.transport.loseConnection()
+        if self._bot and self._bot.transport.connected:
+            self._bot.transport.loseConnection()
 
 @implementer(IServiceMaker, IPlugin)
 class BotServiceMaker(object):
     tapname = "twsrs"
-    describtion = "IRC bot that provides quotations"
+    description = "IRC bot that provides quotations"
     options = Options
 
     def makeService(self, options):
